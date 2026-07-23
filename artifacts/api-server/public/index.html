@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Graph3D Pro — Professional 3D Graphing Calculator</title>
+<meta name="description" content="Professional browser-based 3D graphing calculator. Plot explicit, parametric, implicit surfaces, vector fields, and space curves with real-time WebGL rendering and AI assistance.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Graph3D Pro — 3D Graphing Calculator">
+<meta property="og:description" content="Plot any 3D mathematical surface instantly in your browser.">
+<meta name="theme-color" content="#07090f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='16' fill='white' font-family='monospace'%3E∿%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=optional" rel="stylesheet">
+
+<!-- Stylesheets -->
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style-pro.css">
+
+<!-- Three.js + math engine (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.1/lib/browser/math.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+<!-- Post-processing URLs for engine.js (loaded lazily when bloom/SSAO is enabled) -->
+<script>
+window.G3D_POSTPROCESSING_URLS = [
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/math/SimplexNoise.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/SSAOShader.js",
+  "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/SSAOPass.js"
+];
+</script>
+</head>
+<body>
+
+<!-- Skip link (accessibility) -->
+<a id="skip-link" href="#main">Skip to graph</a>
+
+<!-- ═══════════════ TOPBAR ═══════════════ -->
+<div id="topbar">
+  <!-- Brand area (logo + current graph title) -->
+  <div class="tb-brand-area">
+    <div class="tb-logo-icon">∿</div>
+    <span class="brand-logotype">GRAPH3D</span>
+    <span style="color:var(--b3);font-size:11px;padding:0 4px">|</span>
+    <span id="current-graph-title" title="Click to rename">Untitled Graph</span>
+  </div>
+
+  <!-- Sidebar toggle -->
+  <button id="menu-btn" title="Toggle sidebar (M)" aria-label="Toggle sidebar">
+    <i data-lucide="panel-left" width="15" height="15"></i>
+  </button>
+
+  <!-- Spacer -->
+  <div style="flex:1"></div>
+
+  <!-- Right section: cloud, notifs, account -->
+  <div id="tb-right" class="tb-right">
+
+    <!-- Inline AI button -->
+    <button class="tb-btn" id="ai-btn" aria-label="AI equation assistant" title="AI Assistant (A)">
+      <i data-lucide="sparkles" width="14" height="14"></i>
+    </button>
+
+    <!-- More actions dropdown -->
+    <div id="tb-more-wrap">
+      <button class="tb-btn" id="more-btn" aria-label="More actions" aria-haspopup="true" aria-expanded="false" title="More actions">
+        <i data-lucide="more-horizontal" width="15" height="15"></i>
+      </button>
+      <div id="tb-more-menu" role="menu">
+        <button class="tb-btn" id="share-btn" aria-label="Share graph" role="menuitem">
+          <i data-lucide="share-2" width="12" height="12"></i> Share
+        </button>
+        <button class="tb-btn" id="shot-btn" aria-label="Take screenshot" role="menuitem">
+          <i data-lucide="camera" width="12" height="12"></i> Screenshot
+        </button>
+        <button class="tb-btn" id="anim-btn" aria-label="Animate sliders" role="menuitem">
+          <i data-lucide="play" width="12" height="12"></i> Animate
+        </button>
+        <button class="tb-btn" id="clear-btn" aria-label="Clear all equations" role="menuitem">
+          <i data-lucide="trash-2" width="12" height="12"></i> Clear all
+        </button>
+      </div>
+    </div>
+
+    <!-- Cloud graphs browser button -->
+    <button id="cloud-graphs-btn" title="My Graphs" onclick="ModCloud.togglePanel()">
+      <i data-lucide="folder" width="13" height="13"></i>
+      <span>My Graphs</span>
+    </button>
+
+    <!-- Cloud save button (hidden when not signed in) -->
+    <button id="cloud-save-btn" title="Save to cloud" onclick="ModCloud.showSaveDialog()">
+      <div class="cloud-dot"></div>
+      <i data-lucide="save" width="12" height="12"></i>
+      <span>Save</span>
+    </button>
+
+    <!-- Notifications bell -->
+    <button id="notif-btn" aria-label="Notifications">
+      <i data-lucide="bell" width="14" height="14"></i>
+      <span id="notif-badge" style="display:none">0</span>
+    </button>
+
+    <!-- User account button -->
+    <button id="user-menu-btn" aria-label="Account menu" title="Account">
+      <div id="user-btn-avatar">?</div>
+      <span id="user-btn-name">Account</span>
+      <i data-lucide="chevron-down" width="10" height="10" style="color:var(--t3)"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ BODY ═══════════════ -->
+<div id="body">
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar">
+    <button id="sheet-handle" type="button" aria-label="Equations, sliders, presets, and settings panel. Tap to expand or collapse." aria-expanded="false"></button>
+    <div id="sidebar-inner">
+      <!-- Equations section -->
+      <details class="sidebar-section" open>
+        <summary class="section-header">
+          <i data-lucide="function-square" width="12" height="12"></i>
+          <span>Equations</span>
+        </summary>
+        <div class="section-body" id="sec-eq">
+          <div id="equation-list"></div>
+          <button id="add-equation-btn">
+            <i data-lucide="plus" width="12" height="12"></i> Add equation
+          </button>
+        </div>
+      </details>
+
+      <!-- Sliders section -->
+      <details class="sidebar-section">
+        <summary class="section-header">
+          <i data-lucide="sliders-horizontal" width="12" height="12"></i>
+          <span>Sliders &amp; Variables</span>
+        </summary>
+        <div class="section-body" id="sec-sl">
+          <div id="slider-list"></div>
+          <button id="add-slider-btn">
+            <i data-lucide="plus" width="12" height="12"></i> Add slider
+          </button>
+        </div>
+      </details>
+
+      <!-- Presets section -->
+      <details class="sidebar-section">
+        <summary class="section-header">
+          <i data-lucide="library" width="12" height="12"></i>
+          <span>Presets</span>
+        </summary>
+        <div class="section-body" id="sec-pr"></div>
+      </details>
+
+      <!-- Settings section -->
+      <details class="sidebar-section">
+        <summary class="section-header">
+          <i data-lucide="settings" width="12" height="12"></i>
+          <span>Settings</span>
+        </summary>
+        <div class="section-body collapsed" id="sec-cfg"></div>
+      </details>
+    </div>
+  </aside>
+
+  <div id="sheet-backdrop" tabindex="-1"></div>
+
+  <!-- ── MAIN CANVAS ── -->
+  <main id="main" tabindex="-1">
+    <div id="canvas-wrap">
+      <canvas id="canvas" role="img" aria-label="Interactive 3D graph viewport. Plotted equations are listed in the equations panel; this canvas is a visual rendering of them and is best explored with the equations panel and keyboard camera controls."></canvas>
+      <div id="crosshair"></div>
+      <div id="coord-tooltip">
+        <div class="coord-row"><span class="coord-label cx">x</span><span id="coord-x">0.000</span></div>
+        <div class="coord-row"><span class="coord-label cy">y</span><span id="coord-y">0.000</span></div>
+        <div class="coord-row"><span class="coord-label cz">z</span><span id="coord-z">0.000</span></div>
+      </div>
+
+      <!-- HUD camera controls -->
+      <div id="hud">
+        <button class="hud-btn" id="hud-toggle" aria-label="Show camera controls" aria-expanded="false" title="Camera controls">
+          <i data-lucide="sliders-horizontal" width="14" height="14"></i>
+        </button>
+        <div id="hud-controls">
+          <button class="hud-btn" id="hud-zoom-in"  title="Zoom in (+)"      aria-label="Zoom in">
+            <i data-lucide="zoom-in" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-zoom-out" title="Zoom out (-)"     aria-label="Zoom out">
+            <i data-lucide="zoom-out" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-top"   data-cam="top"   title="Top view (T)"   aria-label="Top view">
+            <i data-lucide="arrow-down-to-line" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-front" data-cam="front" title="Front view (F)" aria-label="Front view">
+            <i data-lucide="layout-template" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-iso"   data-cam="iso"   title="Isometric (I)"  aria-label="Isometric view">
+            <i data-lucide="box" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-reset" data-cam="reset" title="Reset camera (R)" aria-label="Reset camera">
+            <i data-lucide="home" width="14" height="14"></i>
+          </button>
+          <button class="hud-btn" id="hud-fullscreen" title="Fullscreen (Ctrl+F)" aria-label="Toggle fullscreen">
+            <i data-lucide="expand" width="14" height="14"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div id="statusbar">
+        <div id="status-left"></div>
+        <div id="status-right">
+          <span class="status-chip" id="equation-count">0 equations</span>
+          <span class="status-chip" id="surface-count">0 surfaces</span>
+          <span id="memory-usage"></span>
+          <span id="fps-counter">-- fps</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── AI PANEL (right side) ── -->
+  <div id="ai-panel">
+    <div id="ai-panel-header">
+      <span id="ai-panel-title">AI Assistant</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="tb-btn" id="ai-mode-toggle" title="Toggle Tutor Mode" style="font-size:10px;padding:3px 7px">Tutor</button>
+        <button class="tb-btn" id="ai-clear-btn" title="Clear conversation">
+          <i data-lucide="rotate-ccw" width="12" height="12"></i>
+        </button>
+        <button id="ai-close-btn" aria-label="Close AI assistant">
+          <i data-lucide="x" width="14" height="14"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="ai-messages"></div>
+    <div id="ai-thinking" style="display:none;padding:10px 14px;display:none;align-items:center;gap:8px">
+      <div class="ai-thinking-dots"><span></span><span></span><span></span></div>
+      <span style="font-size:11.5px;color:var(--t3)">Thinking…</span>
+    </div>
+
+    <div id="ai-panel-footer">
+      <div class="ai-quick-btns" id="ai-quick-btns"></div>
+      <div class="ai-input-row">
+        <input id="ai-input" type="text" placeholder="Ask anything about math or equations…" autocomplete="off">
+        <button id="ai-send-btn" aria-label="Send message">
+          <i data-lucide="send" width="13" height="13"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /body -->
+
+<!-- ═══════════════ CLOUD GRAPHS PANEL ═══════════════ -->
+<div id="cloud-panel">
+  <div class="cloud-panel-header">
+    <div class="cloud-panel-title">
+      <i data-lucide="folder-open" width="15" height="15"></i>
+      My Graphs
+    </div>
+    <button style="background:none;border:none;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:5px;transition:var(--tr-fast)" onclick="ModCloud.closePanel()" onmouseenter="this.style.background='var(--s2)';this.style.color='var(--t1)'" onmouseleave="this.style.background='none';this.style.color='var(--t3)'">
+      <i data-lucide="x" width="14" height="14"></i>
+    </button>
+  </div>
+  <div class="cloud-panel-actions">
+    <button class="cloud-panel-action-btn" id="cloud-new-btn">
+      <i data-lucide="plus" width="12" height="12"></i>
+      New Graph
+    </button>
+    <button class="cloud-panel-action-btn primary" onclick="ModCloud.showSaveDialog()">
+      <i data-lucide="save" width="12" height="12"></i>
+      Save Current
+    </button>
+  </div>
+  <div id="cloud-graph-list">
+    <div class="cg-empty">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+      <p>Sign in to save graphs</p>
+      <span>Create an account to save and sync your work across devices</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ NOTIFICATIONS PANEL ═══════════════ -->
+<div id="notif-panel">
+  <div class="notif-panel-header">
+    <span class="notif-panel-title">Notifications</span>
+    <button id="notif-mark-all">Mark all read</button>
+  </div>
+  <div id="notif-list"></div>
+</div>
+
+<!-- ═══════════════ ACCOUNT DROPDOWN MENU ═══════════════ -->
+<div id="account-menu">
+  <div class="acct-menu-header">
+    <div class="acct-menu-name" id="acct-menu-name">Your Account</div>
+    <div class="acct-menu-email" id="acct-menu-email"></div>
+    <div id="acct-plan-badge" class="acct-plan-badge acct-plan-free">Free</div>
+  </div>
+  <button class="acct-menu-item" id="menu-account">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile &amp; Account
+  </button>
+  <button class="acct-menu-item" id="menu-billing">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Subscription &amp; Billing
+  </button>
+  <button class="acct-menu-item" id="menu-usage">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 16 4-8 4 4 2-4"/></svg>
+    Usage
+  </button>
+  <button class="acct-menu-item" id="menu-settings">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    Settings
+  </button>
+  <div class="acct-menu-divider"></div>
+  <button class="acct-menu-item acct-menu-danger" id="menu-logout">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
+  </button>
+</div>
+
+<!-- ═══════════════ ACCOUNT PANEL (MODAL) ═══════════════ -->
+<div id="account-panel">
+  <div class="acct-panel-inner">
+    <div class="acct-panel-header">
+      <span class="acct-panel-title">Account Settings</span>
+      <button class="acct-panel-close" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="acct-tabs">
+      <button class="acct-tab active" data-target="acct-account">Profile</button>
+      <button class="acct-tab" data-target="acct-billing">Billing</button>
+      <button class="acct-tab" data-target="acct-usage">Usage</button>
+    </div>
+    <!-- Profile tab -->
+    <div class="acct-tab-content active" id="acct-account">
+      <div class="acct-avatar-section">
+        <div id="acct-avatar">?</div>
+        <div>
+          <div id="acct-name">Loading…</div>
+          <div id="acct-email"></div>
+          <div id="acct-plan-badge" class="acct-plan-badge acct-plan-free" style="margin-top:5px">Free</div>
+        </div>
+      </div>
+      <form id="profile-form" style="margin-top:4px">
+        <div class="profile-field">
+          <label class="profile-label" for="profile-name">Display name</label>
+          <input class="profile-input" type="text" id="profile-name" placeholder="Your name">
+        </div>
+        <button type="submit" class="profile-save-btn">Save changes</button>
+      </form>
+    </div>
+    <!-- Billing tab -->
+    <div class="acct-tab-content" id="acct-billing">
+      <div id="billing-content" class="billing-loading">Loading billing info…</div>
+    </div>
+    <!-- Usage tab -->
+    <div class="acct-tab-content" id="acct-usage">
+      <div id="usage-content" class="usage-loading">Loading usage…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SAVE GRAPH DIALOG ═══════════════ -->
+<div id="save-graph-dialog">
+  <div class="sgd-inner">
+    <div class="sgd-title">Save Graph</div>
+    <form id="save-graph-form">
+      <div class="sgd-field">
+        <label class="sgd-label" for="save-graph-title">Title</label>
+        <input class="sgd-input" type="text" id="save-graph-title" placeholder="My Graph" maxlength="120" required>
+      </div>
+      <div class="sgd-field">
+        <label class="sgd-label" for="save-graph-visibility">Visibility</label>
+        <select class="sgd-select" id="save-graph-visibility">
+          <option value="private">Private — only you can see it</option>
+          <option value="shared">Shared — anyone with the link</option>
+          <option value="public">Public — listed in gallery</option>
+        </select>
+      </div>
+      <div class="sgd-actions">
+        <button type="button" class="sgd-cancel" onclick="document.getElementById('save-graph-dialog').classList.remove('open')">Cancel</button>
+        <button type="submit" class="sgd-save">Save Graph</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════ EQUATION CONTEXT MENU ═══════════════ -->
+<div id="color-picker"></div>
+
+<div id="context-menu">
+  <div class="ctx-item" id="ctx-duplicate">
+    <i data-lucide="copy" width="12" height="12"></i> <span>Duplicate</span>
+  </div>
+  <div class="ctx-item" id="ctx-lock">
+    <i data-lucide="lock" width="12" height="12"></i> <span>Lock</span>
+  </div>
+  <div class="ctx-item" id="ctx-rename">
+    <i data-lucide="pencil" width="12" height="12"></i> <span>Rename</span>
+  </div>
+  <div class="ctx-item" id="ctx-copy-expr">
+    <i data-lucide="clipboard-copy" width="12" height="12"></i> <span>Copy expression</span>
+  </div>
+  <div class="ctx-item" id="ctx-ai-explain">
+    <i data-lucide="sparkles" width="12" height="12"></i> <span>Ask AI to explain</span>
+  </div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" id="ctx-delete">
+    <i data-lucide="trash-2" width="12" height="12"></i> <span>Delete</span>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST CONTAINER ═══════════════ -->
+<div id="toast-container" role="alert" aria-live="polite"></div>
+
+<!-- ═══════════════ GRAPH ENGINE SCRIPTS ═══════════════ -->
+<script src="core/math-engine.js" defer></script>
+<script src="core/camera.js" defer></script>
+<script src="core/engine.js" defer></script>
+<script src="core/graph-builder.js" defer></script>
+
+<!-- ═══════════════ UI MODULES ═══════════════ -->
+<script src="modules/mod-equations.js" defer></script>
+<script src="modules/mod-sliders.js" defer></script>
+<script src="modules/mod-presets.js" defer></script>
+<script src="modules/mod-settings.js" defer></script>
+<script src="modules/mod-export.js" defer></script>
+<script src="modules/mod-audio-trace.js" defer></script>
+<script src="modules/mod-funcs-keyboard.js" defer></script>
+
+<!-- ═══════════════ CLOUD + ACCOUNT MODULES ═══════════════ -->
+<script src="modules/mod-share.js" defer></script>
+<script src="modules/mod-ai.js" defer></script>
+<script src="modules/mod-cloud.js" defer></script>
+<script src="modules/mod-account.js" defer></script>
+
+<!-- ═══════════════ BOOTSTRAP ═══════════════ -->
+<script>
+'use strict';
+
+// Global toast helper (used by all modules)
+window.showToast = function(msg, type = 'info', duration = 3000) {
+  const c = document.getElementById('toast-container');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  // Trigger animation
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('visible')));
+  setTimeout(() => {
+    t.classList.remove('visible');
+    setTimeout(() => t.remove(), 400);
+  }, duration);
+};
+
+// ── Account state init ─────────────────────────────────────────────────────
+async function initAccountState() {
+  let user = null;
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'same-origin' });
+    if (r.ok) {
+      const d = await r.json();
+      user = d.user ?? null;
+    }
+  } catch {}
+
+  // Update account menu name
+  const menuName = document.getElementById('acct-menu-name');
+  const menuEmail = document.getElementById('acct-menu-email');
+  if (menuName) menuName.textContent = user?.displayName ?? user?.email?.split('@')[0] ?? 'Your Account';
+  if (menuEmail) menuEmail.textContent = user?.email ?? '';
+
+  if (!user) {
+    // Signed out: show sign-in link in user button
+    const btn = document.getElementById('user-menu-btn');
+    if (btn) {
+      btn.innerHTML = `<span style="font-size:11px;padding:0 6px;color:var(--t2)">Sign in</span>`;
+      btn.onclick = () => window.location.href = '/login?next=/';
+    }
+    // Hide cloud features
+    const cloudSave = document.getElementById('cloud-save-btn');
+    if (cloudSave) cloudSave.style.display = 'none';
+  }
+
+  // Initialize modules with user context
+  if (window.ModAccount) await ModAccount.init(user);
+  if (window.ModCloud) {
+    ModCloud.setUser(user);
+    await ModCloud.init();
+  }
+
+  return user;
+}
+
+// ── Module safe-init with error reporting ──────────────────────────────────
+function _safeInit(name, fn) {
+  try { fn(); }
+  catch (e) { console.error(`[Graph3D] Init failed for "${name}":`, e); }
+}
+
+// ── Bootstrap sequence ─────────────────────────────────────────────────────
+// Runs after all deferred scripts have loaded.
+window.addEventListener('DOMContentLoaded', () => {
+  // Resolve lucide icons
+  if (window.lucide) lucide.createIcons();
+});
+
+window.addEventListener('load', async () => {
+  // Resolve any lucide icons injected after DOMContentLoaded
+  if (window.lucide) lucide.createIcons();
+
+  _safeInit('MathEngine', () => window.MathEngine && MathEngine.init?.());
+  _safeInit('Engine',     () => window.Engine     && Engine.init?.({ canvas: document.getElementById('canvas') }));
+  _safeInit('Camera',     () => window.Camera     && Camera.init?.({ canvas: document.getElementById('canvas') }));
+
+  _safeInit('Equations',  () => window.ModEquations    && ModEquations.init?.());
+  _safeInit('Sliders',    () => window.ModSliders       && ModSliders.init?.());
+  _safeInit('Presets',    () => window.ModPresets       && ModPresets.init?.());
+  _safeInit('Settings',   () => window.ModSettings      && ModSettings.init?.());
+  _safeInit('Export',     () => window.ModExport        && ModExport.init?.());
+  _safeInit('AudioTrace', () => window.ModAudioTrace    && ModAudioTrace.init?.());
+  _safeInit('FuncKeybd',  () => window.ModFuncsKeyboard && ModFuncsKeyboard.init?.());
+  _safeInit('AI',         () => window.ModAI            && ModAI.init?.());
+  _safeInit('Share',      () => window.ModShare         && ModShare.init?.());
+
+  // Account state (async — non-blocking for the 3D engine)
+  initAccountState().catch(e => console.warn('[Graph3D] Account state error:', e));
+
+  // Wire up topbar buttons
+  _wireTopbar();
+
+  // Close panels on outside click
+  document.addEventListener('click', _handleDocClick);
+
+  // Save graph dialog close on backdrop click
+  document.getElementById('save-graph-dialog')?.addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+  });
+  document.getElementById('account-panel')?.addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+  });
+});
+
+function _wireTopbar() {
+  // Menu toggle
+  document.getElementById('menu-btn')?.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.toggle('collapsed');
+  });
+
+  // AI panel
+  document.getElementById('ai-btn')?.addEventListener('click', () => {
+    if (window.ModAI) ModAI.togglePanel();
+  });
+
+  // Share button
+  document.getElementById('share-btn')?.addEventListener('click', () => {
+    if (window.ModShare) ModShare.copyShareURL();
+  });
+
+  // Screenshot
+  document.getElementById('shot-btn')?.addEventListener('click', () => {
+    if (window.ModExport) ModExport.takeScreenshot?.();
+  });
+
+  // Animate
+  document.getElementById('anim-btn')?.addEventListener('click', () => {
+    if (window.ModSliders) ModSliders.toggleAnimate?.();
+  });
+
+  // Clear all
+  document.getElementById('clear-btn')?.addEventListener('click', () => {
+    if (confirm('Clear all equations?') && window.ModEquations) ModEquations.clearAll?.();
+  });
+
+  // HUD camera buttons
+  document.getElementById('hud-zoom-in')  ?.addEventListener('click', () => Camera?.zoomIn?.());
+  document.getElementById('hud-zoom-out') ?.addEventListener('click', () => Camera?.zoomOut?.());
+  document.querySelectorAll('.hud-btn[data-cam]').forEach(btn => {
+    btn.addEventListener('click', () => Camera?.setView?.(btn.dataset.cam));
+  });
+  document.getElementById('hud-fullscreen')?.addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  });
+
+  // More menu toggle
+  const moreBtn  = document.getElementById('more-btn');
+  const moreMenu = document.getElementById('tb-more-menu');
+  moreBtn?.addEventListener('click', e => {
+    e.stopPropagation();
+    moreMenu?.classList.toggle('open');
+  });
+
+  // Context menu — AI explain
+  document.getElementById('ctx-ai-explain')?.addEventListener('click', () => {
+    if (window.ModAI) ModAI.explainEquation();
+  });
+
+  // Current graph title — click to rename
+  document.getElementById('current-graph-title')?.addEventListener('dblclick', e => {
+    const el = e.target;
+    const old = el.textContent;
+    el.contentEditable = 'true';
+    el.focus();
+    el.addEventListener('blur', () => {
+      el.contentEditable = 'false';
+    }, { once: true });
+    el.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
+      if (ev.key === 'Escape') { el.textContent = old; el.blur(); }
+    }, { once: true });
+  });
+}
+
+function _handleDocClick(e) {
+  // Close more menu
+  const moreMenu = document.getElementById('tb-more-menu');
+  if (moreMenu && !moreMenu.closest('#tb-more-wrap')?.contains(e.target)) {
+    moreMenu.classList.remove('open');
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  // Don't steal from inputs
+  if (e.target.closest('input, textarea, [contenteditable]')) return;
+
+  if (e.key === 'a' || e.key === 'A') {
+    if (!e.ctrlKey && !e.metaKey && window.ModAI) ModAI.togglePanel();
+  }
+  if (e.key === 'm' || e.key === 'M') {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && !e.ctrlKey && !e.metaKey) sidebar.classList.toggle('collapsed');
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (window.ModCloud) ModCloud.showSaveDialog();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault();
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+  if (e.key === 'Escape') {
+    // Close any open overlay (in priority order)
+    if (document.getElementById('account-panel')?.classList.contains('open')) {
+      document.getElementById('account-panel').classList.remove('open');
+    } else if (document.getElementById('cloud-panel')?.classList.contains('open')) {
+      document.getElementById('cloud-panel').classList.remove('open');
+    } else if (document.getElementById('notif-panel')?.classList.contains('open')) {
+      document.getElementById('notif-panel').classList.remove('open');
+    } else if (document.getElementById('account-menu')?.classList.contains('open')) {
+      document.getElementById('account-menu').classList.remove('open');
+    } else if (window.ModAI?.closePanel) {
+      ModAI.closePanel();
+    }
+  }
+});
+</script>
+
+</body>
+</html>

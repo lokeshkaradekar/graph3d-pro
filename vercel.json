@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    }
+  ]
+}
