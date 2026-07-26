@@ -1,0 +1,143 @@
+/**
+ * Graph3D Pro — Design Tokens
+ * PHASE 1 — Design System Foundation
+ * ~/graph3d-pro/assets/tokens.css
+ *
+ * This file is additive. It does not remove or override anything in
+ * style.css — it defines scales that were previously missing (type,
+ * spacing, radius, elevation) and fills a handful of small, isolated
+ * color gaps found in the Phase 1 audit.
+ *
+ * Ownership going forward:
+ *   - Colors, shadows, motion primitives  → still live in style.css's
+ *     :root (already well-tokenized; left untouched to avoid any risk
+ *     of cascade/override surprises this phase).
+ *   - Typography, spacing, radius, elevation → live here, net-new.
+ *
+ * Load order: this file must be linked BEFORE style.css / style-pro.css
+ * so component rules can adopt these tokens in later phases.
+ *
+ * Naming: deliberately verbose/self-documenting (--radius-md, --space-4,
+ * --text-sm) rather than matching the terser legacy convention (--t1,
+ * --s1) already in style.css. A later cleanup phase can decide whether
+ * to reconcile the two conventions once components have migrated.
+ */
+
+:root {
+
+  /* ── Typography scale ─────────────────────────────────────────────
+     Replaces 20 ad-hoc font-sizes (8px–20px, several at .5px
+     increments) with 8 deliberate steps. Sized for a dense,
+     information-heavy pro tool, not a marketing page — jumps are
+     small and controlled. */
+  --text-2xs:  10px;  /* micro labels, badge text, tiny meta */
+  --text-xs:   11px;  /* secondary UI text, captions, timestamps */
+  --text-sm:   12px;  /* default UI text — the most common size in the app */
+  --text-base: 13px;  /* body copy, input values, equation text */
+  --text-md:   14px;  /* emphasized body, sub-headings */
+  --text-lg:   16px;  /* panel/section headings */
+  --text-xl:   18px;  /* dialog titles */
+  --text-2xl:  20px;  /* rare — large display numbers, empty-state headlines */
+
+  --lh-tight:   1.2;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.6;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  /* ── Spacing scale ─────────────────────────────────────────────────
+     Base-4 (not base-8) — this UI is dense enough in practice (audit
+     found real use of 3px/5px/7px/9px gaps) that an 8px-only grid
+     would be too coarse. 4px as the atomic unit, 8px as the standard
+     step, keeps density options while still being a real grid instead
+     of arbitrary odd numbers. */
+  --space-1:  2px;
+  --space-2:  4px;
+  --space-3:  6px;
+  --space-4:  8px;
+  --space-5:  10px;
+  --space-6:  12px;
+  --space-7:  16px;
+  --space-8:  20px;
+  --space-9:  24px;
+  --space-10: 32px;
+
+  /* ── Radius scale ──────────────────────────────────────────────────
+     Per brief spec: buttons 10 / panels 12 / cards 14 / dialogs 16.
+     --radius-sm covers the smallest chrome (checkboxes, tags, chips)
+     that's below the brief's explicit scale.
+     Mobile's larger sheet radius (20px) stays in style.css's mobile
+     override block as a deliberate, already-documented exception —
+     not folded in here. */
+  --radius-sm:   6px;
+  --radius-md:   10px;  /* buttons */
+  --radius-lg:   12px;  /* panels */
+  --radius-xl:   14px;  /* cards */
+  --radius-2xl:  16px;  /* dialogs */
+  --radius-full: 999px; /* pills, avatars */
+
+  /* ── Elevation (z-index) scale ─────────────────────────────────────
+     Replaces 17 undocumented magic numbers (5–1000) with named,
+     ordered layers. */
+  --z-base:     1;
+  --z-raised:   10;   /* cards lifted on hover */
+  --z-sticky:   50;   /* topbar, HUD */
+  --z-dropdown: 100;  /* context menus, "more" menu */
+  --z-overlay:  200;  /* backdrops */
+  --z-modal:    400;  /* dialogs */
+  --z-toast:    900;
+  --z-tooltip:  1000;
+
+  /* ── Small color gaps found in audit ───────────────────────────────
+     Isolated, additive — does not touch the existing color system in
+     style.css. */
+  --on-accent:   #fff;     /* text/icons on solid accent backgrounds — was raw #fff in 2 places */
+  --danger-text: #fca5a5;  /* was a bare hex on .eq-input.error, no token */
+
+  --tier-student: var(--accent, #3b82f6);
+  --tier-pro:     var(--violet, #7c3aed);
+  --tier-team:    var(--amber-d, #d97706);
+}
+
+/**
+ * ── Migration reference (for Phase 2+) ─────────────────────────────
+ * Not live CSS — a lookup table so future edits are mechanical instead
+ * of re-deriving intent from scratch. Values are the audited raw
+ * numbers actually found in style.css / style-pro.css.
+ *
+ * RADIUS
+ *   2px, 3px            → var(--radius-sm)   (or keep 3px only if truly a hairline chip)
+ *   4px, 5px, 6px        → var(--radius-sm)
+ *   8px                  → var(--radius-md)  or var(--radius-lg) — check context (button vs panel)
+ *   10px                 → var(--radius-md)
+ *   14px, 16px           → var(--radius-xl) / var(--radius-2xl) — check context (card vs dialog)
+ *   999px                → var(--radius-full)
+ *
+ * FONT-SIZE
+ *   8px, 9px, 9.5px       → var(--text-2xs)
+ *   10px, 10.5px          → var(--text-2xs) / var(--text-xs) — check line-height fit
+ *   11px, 11.5px          → var(--text-xs)
+ *   12px, 12.5px          → var(--text-sm)
+ *   13px                  → var(--text-base)
+ *   14px                  → var(--text-md)
+ *   16px                  → var(--text-lg)
+ *   18px                  → var(--text-xl)
+ *   20px                  → var(--text-2xl)
+ *
+ * SPACING (padding/margin/gap)
+ *   1px, 2px               → var(--space-1)
+ *   3px, 4px                → var(--space-2)
+ *   5px, 6px                → var(--space-3)
+ *   7px, 8px                → var(--space-4)
+ *   9px, 10px                → var(--space-5)
+ *   12px                     → var(--space-6)
+ *   16px                     → var(--space-7)
+ *   20px                     → var(--space-8)
+ *
+ * Odd values that don't map cleanly (7px, 9px in the audit) should be
+ * nudged to the nearest step during migration, not preserved — that
+ * drift is exactly what the scale is meant to eliminate.
+ */

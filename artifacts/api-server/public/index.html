@@ -7,6 +7,25 @@ window.onerror = function(msg, url, line, col, error) {
     '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:white;padding:12px;font-family:monospace;font-size:11px;white-space:pre-wrap;">JS ERROR: ' + msg + '\nFile: ' + url + '\nLine: ' + line + ':' + col + (error && error.stack ? '\n' + error.stack : '') + '</div>');
   return false;
 };
+window.addEventListener('unhandledrejection', function(e) {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#7c2d12;color:white;padding:12px;font-family:monospace;font-size:11px;white-space:pre-wrap;">UNHANDLED PROMISE REJECTION: ' + (e.reason && e.reason.stack ? e.reason.stack : String(e.reason)) + '</div>');
+});
+window.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var canvas = document.querySelector('canvas');
+    var info = 'CANVAS DEBUG: ';
+    if (!canvas) {
+      info += 'No canvas element found in the DOM at all.';
+    } else {
+      info += 'Found canvas, size=' + canvas.width + 'x' + canvas.height + ', displayed size=' + canvas.clientWidth + 'x' + canvas.clientHeight;
+      var gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      info += gl ? ', WebGL context: OK' : ', WebGL context: FAILED';
+    }
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#1e3a8a;color:white;padding:12px;font-family:monospace;font-size:11px;white-space:pre-wrap;">' + info + '</div>');
+  }, 2000);
+});
 </script>
 
 <meta charset="UTF-8">
@@ -18,15 +37,16 @@ window.onerror = function(msg, url, line, col, error) {
 <meta property="og:title" content="Graph3D Pro — 3D Graphing Calculator">
 <meta property="og:description" content="Plot any 3D mathematical surface instantly in your browser.">
 <meta name="theme-color" content="#07090f">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='16' fill='white' font-family='monospace'%3E∿%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b82f6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='16' fill='white' font-family='monospace'%3E∿%3C/text%3E%3C/svg%3E" type="image/svg+xml">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=optional" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=optional" rel="stylesheet">
 
 <!-- Stylesheets -->
+<link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/style-pro.css">
 
@@ -62,13 +82,13 @@ window.G3D_POSTPROCESSING_URLS = [
   <div class="tb-brand-area">
     <div class="tb-logo-icon">∿</div>
     <span class="brand-logotype">GRAPH3D</span>
-    <span style="color:var(--b3);font-size:11px;padding:0 4px">|</span>
-    <span id="current-graph-title" title="Click to rename">Untitled Graph</span>
+    <span style="color:var(--b3);font-size:var(--text-xs);padding:0 var(--space-2)">|</span>
+    <span id="current-graph-title" data-tooltip="Click to rename">Untitled Graph</span>
   </div>
 
   <!-- Sidebar toggle -->
-  <button id="menu-btn" title="Toggle sidebar (M)" aria-label="Toggle sidebar">
-    <i data-lucide="panel-left" width="15" height="15"></i>
+  <button id="menu-btn" data-tooltip="Toggle sidebar (M)" aria-label="Toggle sidebar">
+    <i data-lucide="panel-left" width="16" height="16"></i>
   </button>
 
   <!-- Spacer -->
@@ -78,52 +98,52 @@ window.G3D_POSTPROCESSING_URLS = [
   <div id="tb-right" class="tb-right">
 
     <!-- Inline AI button -->
-    <button class="tb-btn" id="ai-btn" aria-label="AI equation assistant" title="AI Assistant (A)">
-      <i data-lucide="sparkles" width="14" height="14"></i>
+    <button class="tb-btn" id="ai-btn" aria-label="AI equation assistant" data-tooltip="AI Assistant (A)">
+      <i data-lucide="sparkles" width="16" height="16"></i>
     </button>
 
     <!-- More actions dropdown -->
     <div id="tb-more-wrap">
-      <button class="tb-btn" id="more-btn" aria-label="More actions" aria-haspopup="true" aria-expanded="false" title="More actions">
-        <i data-lucide="more-horizontal" width="15" height="15"></i>
+      <button class="tb-btn" id="more-btn" aria-label="More actions" aria-haspopup="true" aria-expanded="false" data-tooltip="More actions">
+        <i data-lucide="more-horizontal" width="16" height="16"></i>
       </button>
       <div id="tb-more-menu" role="menu">
         <button class="tb-btn" id="share-btn" aria-label="Share graph" role="menuitem">
-          <i data-lucide="share-2" width="12" height="12"></i> Share
+          <i data-lucide="share-2" width="14" height="14"></i> Share
         </button>
         <button class="tb-btn" id="shot-btn" aria-label="Take screenshot" role="menuitem">
-          <i data-lucide="camera" width="12" height="12"></i> Screenshot
+          <i data-lucide="camera" width="14" height="14"></i> Screenshot
         </button>
         <button class="tb-btn" id="anim-btn" aria-label="Animate sliders" role="menuitem">
-          <i data-lucide="play" width="12" height="12"></i> Animate
+          <i data-lucide="play" width="14" height="14"></i> Animate
         </button>
         <button class="tb-btn" id="clear-btn" aria-label="Clear all equations" role="menuitem">
-          <i data-lucide="trash-2" width="12" height="12"></i> Clear all
+          <i data-lucide="trash-2" width="14" height="14"></i> Clear all
         </button>
       </div>
     </div>
 
     <!-- Cloud graphs browser button -->
-    <button id="cloud-graphs-btn" title="My Graphs" onclick="ModCloud.togglePanel()">
-      <i data-lucide="folder" width="13" height="13"></i>
+    <button id="cloud-graphs-btn" data-tooltip="My Graphs" onclick="ModCloud.togglePanel()">
+      <i data-lucide="folder" width="14" height="14"></i>
       <span>My Graphs</span>
     </button>
 
     <!-- Cloud save button (hidden when not signed in) -->
-    <button id="cloud-save-btn" title="Save to cloud" onclick="ModCloud.showSaveDialog()">
+    <button id="cloud-save-btn" data-tooltip="Save to cloud" onclick="ModCloud.showSaveDialog()">
       <div class="cloud-dot"></div>
-      <i data-lucide="save" width="12" height="12"></i>
+      <i data-lucide="save" width="14" height="14"></i>
       <span>Save</span>
     </button>
 
     <!-- Notifications bell -->
-    <button id="notif-btn" aria-label="Notifications">
-      <i data-lucide="bell" width="14" height="14"></i>
+    <button id="notif-btn" aria-label="Notifications" data-tooltip="Notifications">
+      <i data-lucide="bell" width="16" height="16"></i>
       <span id="notif-badge" style="display:none">0</span>
     </button>
 
     <!-- User account button -->
-    <button id="user-menu-btn" aria-label="Account menu" title="Account">
+    <button id="user-menu-btn" aria-label="Account menu" data-tooltip="Account">
       <div id="user-btn-avatar">?</div>
       <span id="user-btn-name">Account</span>
       <i data-lucide="chevron-down" width="10" height="10" style="color:var(--t3)"></i>
@@ -571,62 +591,13 @@ window.addEventListener('load', async () => {
 });
 
 function _wireTopbar() {
-  // Menu toggle
-  document.getElementById('menu-btn')?.addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.toggle('collapsed');
-  });
-
-  // AI panel
-  document.getElementById('ai-btn')?.addEventListener('click', () => {
-    if (window.ModAI) ModAI.togglePanel();
-  });
-
-  // Share button
-  document.getElementById('share-btn')?.addEventListener('click', () => {
-    if (window.ModShare) ModShare.copyShareURL();
-  });
-
-  // Screenshot
-  document.getElementById('shot-btn')?.addEventListener('click', () => {
-    if (window.ModExport) ModExport.takeScreenshot?.();
-  });
-
-  // Animate
-  document.getElementById('anim-btn')?.addEventListener('click', () => {
-    if (window.ModSliders) ModSliders.toggleAnimate?.();
-  });
-
-  // Clear all
-  document.getElementById('clear-btn')?.addEventListener('click', () => {
-    if (confirm('Clear all equations?') && window.ModEquations) ModEquations.clearAll?.();
-  });
-
-  // HUD camera buttons
-  document.getElementById('hud-zoom-in')  ?.addEventListener('click', () => Camera?.zoomIn?.());
-  document.getElementById('hud-zoom-out') ?.addEventListener('click', () => Camera?.zoomOut?.());
-  document.querySelectorAll('.hud-btn[data-cam]').forEach(btn => {
-    btn.addEventListener('click', () => Camera?.setView?.(btn.dataset.cam));
-  });
+  // HUD fullscreen toggle (only implemented here — not duplicated in any module)
   document.getElementById('hud-fullscreen')?.addEventListener('click', () => {
     if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
     else document.exitFullscreen?.();
   });
 
-  // More menu toggle
-  const moreBtn  = document.getElementById('more-btn');
-  const moreMenu = document.getElementById('tb-more-menu');
-  moreBtn?.addEventListener('click', e => {
-    e.stopPropagation();
-    moreMenu?.classList.toggle('open');
-  });
-
-  // Context menu — AI explain
-  document.getElementById('ctx-ai-explain')?.addEventListener('click', () => {
-    if (window.ModAI) ModAI.explainEquation();
-  });
-
-  // Current graph title — click to rename
+  // Current graph title — click to rename (only implemented here)
   document.getElementById('current-graph-title')?.addEventListener('dblclick', e => {
     const el = e.target;
     const old = el.textContent;

@@ -64,12 +64,10 @@ button,select,input,[tabindex]{-webkit-tap-highlight-color:transparent}
 #menu-btn{width:var(--topbar-h);height:var(--topbar-h);display:flex;align-items:center;justify-content:center;background:none;border:none;border-right:1px solid var(--b1);color:var(--t3);cursor:pointer;flex-shrink:0;transition:var(--tr-fast)}
 #menu-btn:hover{background:var(--s1);color:var(--t1)}
 #logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-size:14px;font-weight:600;letter-spacing:-.4px;user-select:none;flex-shrink:0}
-.logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(140deg,#3b82f6,#7c3aed);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-mark svg{color:#fff}
 .logo-name{color:var(--t1)}
 .logo-badge{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);border:1px solid var(--b2);padding:2px 5px;border-radius:3px}
-#tb-right{margin-left:auto;display:flex;align-items:center;gap:3px;padding-right:12px}
-.tb-btn{height:28px;padding:0 10px;background:none;border:1px solid var(--b1);color:var(--t2);border-radius:var(--radius);cursor:pointer;font-size:11.5px;font-weight:500;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:var(--tr-fast);flex-shrink:0}
+#tb-right{margin-left:auto;display:flex;align-items:center;gap:var(--space-2);padding-right:var(--space-6)}
+.tb-btn{height:30px;padding:0 var(--space-5);background:none;border:1px solid transparent;color:var(--t2);border-radius:var(--radius-md);cursor:pointer;font-size:var(--text-sm);font-weight:var(--fw-medium);display:flex;align-items:center;gap:var(--space-3);white-space:nowrap;transition:var(--tr-fast);flex-shrink:0}
 .tb-btn svg{flex-shrink:0}
 .tb-btn:hover{border-color:var(--abrd);color:var(--t1);background:var(--adim)}
 .tb-btn:active{transform:scale(0.96)}
@@ -201,6 +199,9 @@ kbd{font-size:9px;font-family:var(--font-mono);padding:1px 4px;background:var(--
 [data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%) translateY(2px);background:rgba(11,14,24,.96);color:var(--t1);font-size:10.5px;font-weight:500;padding:4px 8px;border-radius:4px;border:1px solid var(--b2);white-space:nowrap;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .12s ease,transform .12s ease;box-shadow:var(--shadow-sm);z-index:200}
 [data-tooltip]:hover::after,[data-tooltip]:focus-visible::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 @media(hover:none) and (pointer:coarse){[data-tooltip]::after{display:none}}
+/* Topbar sits at the very top of the viewport — an upward tooltip would
+   clip against the browser edge, so flip it to point down instead. */
+#topbar [data-tooltip]::after{bottom:auto;top:calc(100% + 7px);transform:translateX(-50%) translateY(-2px)}
 
 #hud{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:3px;z-index:20}
 .hud-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(7,9,15,.9);border:1px solid var(--b2);color:var(--t2);border-radius:var(--radius);cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:var(--tr-fast);flex-shrink:0}
@@ -456,6 +457,14 @@ body.light #sidebar.closed,body.light #sidebar{box-shadow:none}
   #tb-more-menu .tb-btn{justify-content:flex-start;border-color:transparent;width:100%;min-height:var(--touch);height:auto;padding:0 12px}
   #tb-more-menu .tb-btn span{display:inline!important}
 
+  /* "My Graphs" / "Save" keep their icon but drop the text label — matches
+     the account button, which already goes icon-only on mobile (see
+     style-pro.css #user-btn-name). Without this, 5 full pill-shaped
+     buttons (AI, More, My Graphs, notif, account) compete for space in
+     one row on a phone-width topbar. */
+  #cloud-graphs-btn span,#cloud-save-btn span{display:none}
+  #cloud-graphs-btn,#cloud-save-btn{padding:0 var(--space-4);gap:0}
+
   /* Status bar: the desktop mouse-gesture hint ("right-drag to pan" isn't
      even a touch gesture) and dev-facing fps/memory readouts are dropped by
      default on mobile — equation/surface counts stay, everything else is
@@ -485,6 +494,12 @@ body.light #sidebar.closed,body.light #sidebar{box-shadow:none}
   :root{--sidebar-w:260px}
   #ai-panel{width:280px}
   .key-hints{gap:3px 7px}
+}
+/* Narrow tablet / small-laptop sub-range: same crowding risk as mobile
+   before the 640px breakpoint takes over the whole layout. */
+@media(min-width:641px) and (max-width:860px){
+  #cloud-graphs-btn span,#cloud-save-btn span{display:none}
+  #cloud-graphs-btn,#cloud-save-btn{padding:0 var(--space-4);gap:0}
 }
 @media(min-width:1025px){
   #ai-panel{width:340px}
