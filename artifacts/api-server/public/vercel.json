@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/landing", "destination": "/landing.html" },
+    { "source": "/login", "destination": "/login.html" }
+  ]
+}
