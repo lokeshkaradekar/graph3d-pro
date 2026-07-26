@@ -407,7 +407,15 @@ const Engine = (() => {
     buildOriginMarker();
 
     // ── Resize ────────────────────────────────────────
-    resize();
+    // A plain resize() + window 'resize' listener isn't enough: on initial
+    // mobile page load the window never actually fires a resize event, so
+    // if the container reports 0×0 on that first synchronous call (very
+    // possible while fonts/CSS are still settling), the canvas gets
+    // permanently stuck at the browser's default 300×150 forever. ResizeObserver
+    // instead fires on the container's first real layout AND every change
+    // after, which covers both the startup race and normal window resizing.
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(renderer.domElement.parentElement);
     window.addEventListener('resize', resize);
 
     // ── Post-processing (only actually builds if bloom/AO start enabled) ──
