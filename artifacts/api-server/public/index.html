@@ -201,7 +201,7 @@ window.G3D_POSTPROCESSING_URLS = [
           <i data-lucide="settings" width="12" height="12"></i>
           <span>Settings</span>
         </summary>
-        <div class="section-body collapsed" id="sec-cfg"></div>
+        <div class="section-body" id="sec-cfg"></div>
       </details>
     </div>
   </aside>
@@ -636,7 +636,7 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'm' || e.key === 'M') {
     const sidebar = document.getElementById('sidebar');
-    if (sidebar && !e.ctrlKey && !e.metaKey) sidebar.classList.toggle('collapsed');
+    if (sidebar && !e.ctrlKey && !e.metaKey) sidebar.classList.toggle('closed');
   }
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault();
