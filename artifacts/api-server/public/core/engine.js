@@ -2431,3 +2431,5 @@ const Engine = (() => {
   };
 
 })();
+
+window.Engine = Engine;

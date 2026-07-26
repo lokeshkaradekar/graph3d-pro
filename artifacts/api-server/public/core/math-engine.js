@@ -2527,6 +2527,11 @@ const MathEngine = (() => {
 
 })();
 
+// Browser export — index.html's bootstrap gates init on `window.MathEngine`.
+if (typeof window !== 'undefined') {
+  window.MathEngine = MathEngine;
+}
+
 // Node/CommonJS export — no-op in the browser (typeof module is undefined
 // there), needed so core/math-engine-line-parser.test.js and any other
 // Node-based regression test can actually `require('./math-engine.js')`

@@ -437,3 +437,5 @@ const ModExport = (() => {
   };
 
 })();
+
+window.ModExport = ModExport;

@@ -1519,3 +1519,5 @@ const ModSliders = (() => {
   };
 
 })();
+
+window.ModSliders = ModSliders;

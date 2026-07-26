@@ -1461,3 +1461,5 @@ const Camera = (() => {
   };
 
 })();
+
+window.Camera = Camera;

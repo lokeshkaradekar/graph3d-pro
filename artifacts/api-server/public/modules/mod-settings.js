@@ -1376,6 +1376,8 @@ const ModSettings = (() => {
 
 })();
 
+window.ModSettings = ModSettings;
+
 /* ═══════════════════════════════════════════════════════
    UPGRADES — Units, Configurable grid, Accessibility
 ═══════════════════════════════════════════════════════ */

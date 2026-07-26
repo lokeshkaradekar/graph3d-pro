@@ -341,3 +341,5 @@ const ModShare = (() => {
   };
 
 })();
+
+window.ModShare = ModShare;

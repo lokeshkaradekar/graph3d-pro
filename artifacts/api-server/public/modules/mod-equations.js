@@ -2867,3 +2867,5 @@ const ModEquations = (() => {
   };
 
 })();
+
+window.ModEquations = ModEquations;

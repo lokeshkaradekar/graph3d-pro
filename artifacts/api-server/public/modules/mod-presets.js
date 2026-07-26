@@ -1396,3 +1396,5 @@ const ModPresets = (() => {
   };
 
 })();
+
+window.ModPresets = ModPresets;

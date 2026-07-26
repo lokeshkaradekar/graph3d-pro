@@ -1640,3 +1640,5 @@ const GraphBuilder = (() => {
   };
 
 })();
+
+window.GraphBuilder = GraphBuilder;

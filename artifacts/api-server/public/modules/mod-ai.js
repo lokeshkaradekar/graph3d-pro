@@ -349,3 +349,5 @@ Keep responses concise and focused on mathematics. Do not use emojis.`;
   };
 
 })();
+
+window.ModAI = ModAI;

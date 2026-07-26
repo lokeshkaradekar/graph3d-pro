@@ -646,3 +646,7 @@ const ModFuncs = (() => {
   };
 
 })();
+
+// Note: index.html's bootstrap checks `window.ModFuncsKeyboard` (not
+// `ModFuncs`) — export under that name so the guard actually passes.
+window.ModFuncsKeyboard = ModFuncs;
