@@ -559,8 +559,13 @@ window.addEventListener('load', async () => {
   if (window.lucide) lucide.createIcons();
 
   _safeInit('MathEngine', () => window.MathEngine && MathEngine.init?.());
-  _safeInit('Engine',     () => window.Engine     && Engine.init?.({ canvas: document.getElementById('canvas') }));
-  _safeInit('Camera',     () => window.Camera     && Camera.init?.({ canvas: document.getElementById('canvas') }));
+  _safeInit('Engine',     () => window.Engine     && Engine.init?.(document.getElementById('canvas')));
+  _safeInit('Camera',     () => window.Camera && window.Engine && Camera.init?.(
+    Engine.getVirtualCamera(), // the camera OrbitControls actually drives — see engine.js's perspCam/virtualCam split
+    null,                      // no separate ortho camera — Engine uses a perspective-distortion blend instead (see camera.js's ORTHOGRAPHIC TOGGLE note)
+    Engine.getControls(),
+    Engine.getRenderer()
+  ));
 
   _safeInit('Equations',  () => window.ModEquations    && ModEquations.init?.());
   _safeInit('Sliders',    () => window.ModSliders       && ModSliders.init?.());
