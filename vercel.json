@@ -1,6 +1,6 @@
-{
+ {
   "version": 2,
-  "outputDirectory": "dist",
+  "outputDirectory": "artifacts/api-server/public",
   "rewrites": [
     {
       "source": "/landing",
@@ -12,3 +12,4 @@
     }
   ]
 }
+
