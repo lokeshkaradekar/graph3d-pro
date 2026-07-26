@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+window.onerror = function(msg, url, line, col, error) {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:white;padding:12px;font-family:monospace;font-size:11px;white-space:pre-wrap;">JS ERROR: ' + msg + '\nFile: ' + url + '\nLine: ' + line + ':' + col + (error && error.stack ? '\n' + error.stack : '') + '</div>');
+  return false;
+};
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Graph3D Pro — Professional 3D Graphing Calculator</title>
