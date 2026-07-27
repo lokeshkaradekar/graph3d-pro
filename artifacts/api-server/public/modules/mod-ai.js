@@ -101,7 +101,7 @@ Keep responses concise and focused on mathematics. Do not use emojis.`;
 
     const r = await fetch(API_URL, {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages, max_tokens: 1024 }),
     });

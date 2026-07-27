@@ -148,13 +148,8 @@ export function setSessionCookie(
 
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    // SameSite=None is required so the Vercel-hosted frontend
-    // (a different origin) can send this cookie on cross-site fetch
-    // requests. None *requires* Secure on every browser — tying it to
-    // NODE_ENV here would make the browser silently drop the cookie
-    // in dev, so it's unconditional.
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
     path: "/",
     maxAge: maxAge * 1000, // express cookie maxAge is in ms
   });
@@ -164,7 +159,7 @@ export function clearSessionCookie(res: Response): void {
   res.cookie(COOKIE_NAME, "", {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
     path: "/",
     maxAge: 0,
   });

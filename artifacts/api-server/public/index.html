@@ -30,17 +30,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<!-- Cross-origin API base: Vercel hosts this folder as static files only
-     (no backend there), so on *.vercel.app point API calls at the
-     Render-hosted backend instead. Same-origin deploys (Render itself,
-     or any future custom domain fronting the real server) get '' so
-     every /api/... call stays a plain relative fetch, unchanged. -->
-<script>
-window.GRAPH3D_API_BASE = /\.vercel\.app$/.test(location.hostname)
-  ? 'https://graph3d-pro.onrender.com'
-  : '';
-</script>
 <title>Graph3D Pro — Professional 3D Graphing Calculator</title>
 <meta name="description" content="Professional browser-based 3D graphing calculator. Plot explicit, parametric, implicit surfaces, vector fields, and space curves with real-time WebGL rendering and AI assistance.">
 <meta name="robots" content="index, follow">
@@ -517,7 +506,7 @@ window.showToast = function(msg, type = 'info', duration = 3000) {
 async function initAccountState() {
   let user = null;
   try {
-    const r = await fetch((window.GRAPH3D_API_BASE ?? '') + '/api/auth/me', { credentials: 'include' });
+    const r = await fetch('/api/auth/me', { credentials: 'same-origin' });
     if (r.ok) {
       const d = await r.json();
       user = d.user ?? null;

@@ -4,16 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign In — Graph3D Pro</title>
-
-<!-- Cross-origin API base: Vercel hosts this folder as static files only
-     (no backend there), so on *.vercel.app point API calls at the
-     Render-hosted backend instead. Same-origin deploys (Render itself)
-     get '' so every /api/... call stays a plain relative fetch. -->
-<script>
-window.GRAPH3D_API_BASE = /\.vercel\.app$/.test(location.hostname)
-  ? 'https://graph3d-pro.onrender.com'
-  : '';
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -374,9 +364,9 @@ document.getElementById('form-signin')?.addEventListener('submit', async e => {
   const btn = document.getElementById('signin-submit');
   setLoading(btn, true, 'Sign In');
   try {
-    const res = await fetch((window.GRAPH3D_API_BASE ?? '') + '/api/auth/login', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
@@ -400,9 +390,9 @@ document.getElementById('form-forgot')?.addEventListener('submit', async e => {
   const btn = document.getElementById('forgot-submit');
   setLoading(btn, true, 'Send Reset Link');
   try {
-    await fetch((window.GRAPH3D_API_BASE ?? '') + '/api/auth/forgot-password', {
+    await fetch('/api/auth/forgot-password', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
@@ -432,9 +422,9 @@ document.getElementById('form-signup')?.addEventListener('submit', async e => {
   if (password !== confirm) { showError('signup-error', 'Passwords do not match.'); return; }
   setLoading(btn, true, 'Create Account');
   try {
-    const res = await fetch((window.GRAPH3D_API_BASE ?? '') + '/api/auth/signup', {
+    const res = await fetch('/api/auth/signup', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, displayName: name || undefined, website }),
     });

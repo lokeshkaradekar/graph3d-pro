@@ -28,7 +28,7 @@ const ModCloud = (() => {
 
   async function apiFetch(path, opts = {}) {
     const r = await fetch(API + path, {
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json', ...(opts.headers ?? {}) },
       ...opts,
     });
