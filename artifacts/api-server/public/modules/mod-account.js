@@ -17,7 +17,7 @@ const ModAccount = (() => {
 
   async function apiFetch(path, opts = {}) {
     const r = await fetch(API + path, {
-      credentials: 'same-origin',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json', ...(opts.headers ?? {}) },
       ...opts,
     });
