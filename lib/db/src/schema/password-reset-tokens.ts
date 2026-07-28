@@ -5,7 +5,7 @@ import {
   timestamp,
   index,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
+import { usersTable } from "./users.js";
 
 export const passwordResetTokensTable = pgTable(
   "password_reset_tokens",

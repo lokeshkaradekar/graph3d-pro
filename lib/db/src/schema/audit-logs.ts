@@ -6,7 +6,7 @@ import {
   jsonb,
   index,
 } from "drizzle-orm/pg-core";
-import { auditActorTypeEnum } from "./enums";
+import { auditActorTypeEnum } from "./enums.js";
 
 /**
  * Immutable audit trail. Never update or delete rows here.

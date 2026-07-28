@@ -1,4 +1,4 @@
-import { APP_NAME, APP_URL, SUPPORT_EMAIL, BRAND } from "./brand";
+import { APP_NAME, APP_URL, SUPPORT_EMAIL, BRAND } from "./brand.js";
 
 const FONT_STACK = "'Segoe UI', Helvetica, Arial, sans-serif";
 

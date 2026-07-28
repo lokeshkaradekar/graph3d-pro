@@ -8,8 +8,8 @@ import {
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
-import { graphVisibilityEnum } from "./enums";
+import { usersTable } from "./users.js";
+import { graphVisibilityEnum } from "./enums.js";
 
 export const graphsTable = pgTable(
   "graphs",

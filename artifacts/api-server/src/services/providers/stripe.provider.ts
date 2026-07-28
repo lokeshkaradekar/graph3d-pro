@@ -11,7 +11,7 @@ import type {
   CheckoutSessionParams,
   CheckoutSessionResult,
   WebhookVerificationResult,
-} from "../billing.service";
+} from "../billing.service.js";
 
 let stripeClient: Stripe | null = null;
 

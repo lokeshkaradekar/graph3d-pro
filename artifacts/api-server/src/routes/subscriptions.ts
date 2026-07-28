@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { requireVerified } from "../middlewares/require-verified";
-import { validate } from "../middlewares/validate";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { requireVerified } from "../middlewares/require-verified.js";
+import { validate } from "../middlewares/validate.js";
 import {
   getPublicPlans,
   getActiveSubscription,
   getSubscriptionHistory,
   cancelSubscription,
-} from "../services/subscription.service";
-import { audit } from "../services/audit.service";
+} from "../services/subscription.service.js";
+import { audit } from "../services/audit.service.js";
 
 const router = Router();
 

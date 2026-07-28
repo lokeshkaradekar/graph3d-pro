@@ -11,10 +11,10 @@
  */
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { authLimiter } from "../middlewares/rate-limit";
-import { validate } from "../middlewares/validate";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { authLimiter } from "../middlewares/rate-limit.js";
+import { validate } from "../middlewares/validate.js";
 import {
   findUserByEmail,
   createUser,
@@ -30,7 +30,7 @@ import {
   initiatePasswordReset,
   resetPassword,
   softDeleteUser,
-} from "../services/user.service";
+} from "../services/user.service.js";
 import {
   createSession,
   destroySession,
@@ -38,14 +38,14 @@ import {
   setSessionCookie,
   clearSessionCookie,
   getTokenFromRequest,
-} from "../services/session.service";
-import { createFreeSubscription } from "../services/subscription.service";
-import { sendVerificationEmail } from "../lib/email";
+} from "../services/session.service.js";
+import { createFreeSubscription } from "../services/subscription.service.js";
+import { sendVerificationEmail } from "../lib/email/index.js";
 import {
   audit,
   auditAuth,
   type AuditAction,
-} from "../services/audit.service";
+} from "../services/audit.service.js";
 
 const router = Router();
 

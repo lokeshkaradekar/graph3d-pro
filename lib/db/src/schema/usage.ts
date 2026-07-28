@@ -7,8 +7,8 @@ import {
   unique,
   index,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
-import { usageMetricEnum } from "./enums";
+import { usersTable } from "./users.js";
+import { usageMetricEnum } from "./enums.js";
 
 /**
  * Per-user usage counters for quota enforcement.

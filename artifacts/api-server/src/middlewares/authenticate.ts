@@ -11,7 +11,7 @@ import {
   getTokenFromRequest,
   getUserFromToken,
   type SessionUser,
-} from "../services/session.service";
+} from "../services/session.service.js";
 
 declare global {
   namespace Express {

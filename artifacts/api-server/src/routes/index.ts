@@ -1,15 +1,15 @@
 import { Router, type IRouter } from "express";
-import healthRouter from "./health";
-import authRouter from "./auth";
-import usersRouter from "./users";
-import subscriptionsRouter from "./subscriptions";
-import featuresRouter from "./features";
-import graphsRouter from "./graphs";
-import usageRouter from "./usage";
-import billingRouter from "./billing";
-import adminRouter from "./admin";
-import notificationsRouter from "./notifications";
-import chatRouter from "./chat";
+import healthRouter from "./health.js";
+import authRouter from "./auth.js";
+import usersRouter from "./users.js";
+import subscriptionsRouter from "./subscriptions.js";
+import featuresRouter from "./features.js";
+import graphsRouter from "./graphs.js";
+import usageRouter from "./usage.js";
+import billingRouter from "./billing.js";
+import adminRouter from "./admin.js";
+import notificationsRouter from "./notifications.js";
+import chatRouter from "./chat.js";
 
 const router: IRouter = Router();
 

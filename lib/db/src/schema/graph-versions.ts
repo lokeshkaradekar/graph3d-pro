@@ -8,8 +8,8 @@ import {
   index,
   unique,
 } from "drizzle-orm/pg-core";
-import { graphsTable } from "./graphs";
-import { usersTable } from "./users";
+import { graphsTable } from "./graphs.js";
+import { usersTable } from "./users.js";
 
 /**
  * Point-in-time snapshots of graph state.

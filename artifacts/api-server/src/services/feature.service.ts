@@ -25,8 +25,8 @@ import {
   type PlanFeature,
   type UserFeature,
 } from "@workspace/db";
-import { FREE_PLAN_SLUG } from "../lib/constants";
-import { currentMonthPeriod, currentYearPeriod } from "../lib/crypto";
+import { FREE_PLAN_SLUG } from "../lib/constants.js";
+import { currentMonthPeriod, currentYearPeriod } from "../lib/crypto.js";
 
 export interface EffectiveFeature {
   featureName: string;

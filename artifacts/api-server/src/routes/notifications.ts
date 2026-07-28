@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
 import {
   getUserNotifications,
   markNotificationRead,
   markAllNotificationsRead,
   getUnreadCount,
-} from "../services/notification.service";
+} from "../services/notification.service.js";
 
 const router = Router();
 

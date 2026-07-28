@@ -7,7 +7,7 @@ import {
   unique,
   index,
 } from "drizzle-orm/pg-core";
-import { plansTable } from "./plans";
+import { plansTable } from "./plans.js";
 
 /**
  * Defines which features are included in each plan and their limits.

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { hasFeature } from "../services/feature.service";
+import { hasFeature } from "../services/feature.service.js";
 
 /**
  * Factory: creates a middleware that rejects users who don't have a feature.

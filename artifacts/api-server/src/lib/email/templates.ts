@@ -1,5 +1,5 @@
-import { renderEmailLayout, renderButton, heading, paragraph, fineprint, fallbackLink } from "./layout";
-import { APP_NAME, BRAND } from "./brand";
+import { renderEmailLayout, renderButton, heading, paragraph, fineprint, fallbackLink } from "./layout.js";
+import { APP_NAME, BRAND } from "./brand.js";
 
 export interface RenderedEmail {
   subject: string;

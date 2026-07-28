@@ -7,8 +7,8 @@ import {
   unique,
   index,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
-import { featureGrantSourceEnum } from "./enums";
+import { usersTable } from "./users.js";
+import { featureGrantSourceEnum } from "./enums.js";
 
 /**
  * Per-user feature grants that override or supplement the subscription plan.

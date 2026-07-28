@@ -4,10 +4,10 @@
  */
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { validate } from "../middlewares/validate";
-import { authLimiter } from "../middlewares/rate-limit";
-import { incrementUsage } from "../services/usage.service";
+import { authenticate } from "../middlewares/authenticate.js";
+import { validate } from "../middlewares/validate.js";
+import { authLimiter } from "../middlewares/rate-limit.js";
+import { incrementUsage } from "../services/usage.service.js";
 
 const router = Router();
 

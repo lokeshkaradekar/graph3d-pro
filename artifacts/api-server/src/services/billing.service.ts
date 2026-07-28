@@ -7,7 +7,7 @@
  *   2. Register it in getProvider() below
  *   3. No changes to route handlers or webhook logic needed
  */
-import { logger } from "../lib/logger";
+import { logger } from "../lib/logger.js";
 
 // ── Provider interface ────────────────────────────────────────────────────────
 

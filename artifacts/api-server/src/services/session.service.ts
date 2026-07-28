@@ -10,12 +10,12 @@ import {
   generateToken,
   hashToken,
   getClientIp,
-} from "../lib/crypto";
+} from "../lib/crypto.js";
 import {
   COOKIE_NAME,
   SESSION_DAYS_DEFAULT,
   SESSION_DAYS_REMEMBER,
-} from "../lib/constants";
+} from "../lib/constants.js";
 import type { Request, Response } from "express";
 
 export interface SessionUser {

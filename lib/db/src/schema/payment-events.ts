@@ -7,7 +7,7 @@ import {
   unique,
   index,
 } from "drizzle-orm/pg-core";
-import { paymentEventStatusEnum, billingProviderEnum } from "./enums";
+import { paymentEventStatusEnum, billingProviderEnum } from "./enums.js";
 
 /**
  * Idempotency table for webhook event processing.

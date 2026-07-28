@@ -6,13 +6,13 @@ import {
   type Graph,
   type GraphVersion,
 } from "@workspace/db";
-import { generateShareToken } from "../lib/crypto";
+import { generateShareToken } from "../lib/crypto.js";
 import {
   MAX_GRAPH_DATA_BYTES,
   MAX_GRAPH_TITLE_LENGTH,
   MAX_GRAPH_DESCRIPTION_LENGTH,
   MAX_VERSIONS_KEPT,
-} from "../lib/constants";
+} from "../lib/constants.js";
 
 // ── Validation ────────────────────────────────────────────────────────────────
 

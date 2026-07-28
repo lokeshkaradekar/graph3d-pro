@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { getUserUsage } from "../services/usage.service";
-import { getUserFeatures } from "../services/feature.service";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { getUserUsage } from "../services/usage.service.js";
+import { getUserFeatures } from "../services/feature.service.js";
 
 const router = Router();
 

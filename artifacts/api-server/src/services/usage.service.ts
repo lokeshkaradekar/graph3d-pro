@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { db } from "@workspace/db";
 import { usageTable } from "@workspace/db";
-import { currentMonthPeriod, currentYearPeriod } from "../lib/crypto";
+import { currentMonthPeriod, currentYearPeriod } from "../lib/crypto.js";
 import type { usageMetricEnum } from "@workspace/db";
 import type { InferSelectModel } from "drizzle-orm";
 

@@ -9,9 +9,9 @@
  */
 import { db } from "@workspace/db";
 import { auditLogsTable } from "@workspace/db";
-import { logger } from "../lib/logger";
+import { logger } from "../lib/logger.js";
 import type { Request } from "express";
-import type { SessionUser } from "./session.service";
+import type { SessionUser } from "./session.service.js";
 
 export type AuditAction =
   // Auth

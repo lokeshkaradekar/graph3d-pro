@@ -7,15 +7,15 @@
  * below — the four functions exported here, and everywhere that calls
  * them, never change.
  */
-import { logger } from "../logger";
-import { ConsoleEmailProvider, ResendEmailProvider, type EmailProvider } from "./provider";
+import { logger } from "../logger.js";
+import { ConsoleEmailProvider, ResendEmailProvider, type EmailProvider } from "./provider.js";
 import {
   verificationEmailTemplate,
   passwordResetEmailTemplate,
   paymentFailedEmailTemplate,
   subscriptionCanceledEmailTemplate,
-} from "./templates";
-import { APP_URL } from "./brand";
+} from "./templates.js";
+import { APP_URL } from "./brand.js";
 
 const isDev = process.env["NODE_ENV"] !== "production";
 const resendApiKey = process.env["RESEND_API_KEY"];

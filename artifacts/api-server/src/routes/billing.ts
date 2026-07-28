@@ -11,18 +11,18 @@
  */
 import { Router, raw } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { requireVerified } from "../middlewares/require-verified";
-import { webhookLimiter } from "../middlewares/rate-limit";
-import { validate } from "../middlewares/validate";
-import { getProvider } from "../services/billing.service";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { requireVerified } from "../middlewares/require-verified.js";
+import { webhookLimiter } from "../middlewares/rate-limit.js";
+import { validate } from "../middlewares/validate.js";
+import { getProvider } from "../services/billing.service.js";
 import {
   getPlanBySlug,
   activatePaidSubscription,
   renewSubscription,
   markSubscriptionPastDue,
-} from "../services/subscription.service";
+} from "../services/subscription.service.js";
 import { eq } from "drizzle-orm";
 import { db } from "@workspace/db";
 import {
@@ -31,8 +31,8 @@ import {
   subscriptionsTable,
   usersTable,
 } from "@workspace/db";
-import { auditWebhook, auditBilling } from "../services/audit.service";
-import { createNotification } from "../services/notification.service";
+import { auditWebhook, auditBilling } from "../services/audit.service.js";
+import { createNotification } from "../services/notification.service.js";
 
 const router = Router();
 

@@ -8,7 +8,7 @@ import {
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { userRoleEnum } from "./enums";
+import { userRoleEnum } from "./enums.js";
 
 export const usersTable = pgTable(
   "users",

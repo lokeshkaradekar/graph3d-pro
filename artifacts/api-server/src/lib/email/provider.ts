@@ -1,5 +1,5 @@
-import { logger } from "../logger";
-import { FROM_EMAIL } from "./brand";
+import { logger } from "../logger.js";
+import { FROM_EMAIL } from "./brand.js";
 
 export interface EmailMessage {
   to: string;

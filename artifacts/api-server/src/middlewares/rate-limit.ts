@@ -13,7 +13,7 @@ import {
   RATE_LIMIT_MAX_REQUESTS,
   RATE_LIMIT_AUTH_MAX,
   RATE_LIMIT_WEBHOOK_MAX,
-} from "../lib/constants";
+} from "../lib/constants.js";
 
 /** General API rate limiter — applied to all routes */
 export const generalLimiter = rateLimit({

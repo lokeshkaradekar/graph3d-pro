@@ -5,8 +5,8 @@ import {
   timestamp,
   index,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
-import { notificationTypeEnum } from "./enums";
+import { usersTable } from "./users.js";
+import { notificationTypeEnum } from "./enums.js";
 
 export const notificationsTable = pgTable(
   "notifications",

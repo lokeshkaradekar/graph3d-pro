@@ -9,9 +9,9 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
-import { usersTable } from "./users";
-import { subscriptionsTable } from "./subscriptions";
-import { paymentStatusEnum, billingProviderEnum } from "./enums";
+import { usersTable } from "./users.js";
+import { subscriptionsTable } from "./subscriptions.js";
+import { paymentStatusEnum, billingProviderEnum } from "./enums.js";
 
 export const paymentsTable = pgTable(
   "payments",

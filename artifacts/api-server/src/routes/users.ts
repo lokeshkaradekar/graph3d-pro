@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { validate } from "../middlewares/validate";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { validate } from "../middlewares/validate.js";
 import {
   findUserById,
   updateProfile,
   softDeleteUser,
-} from "../services/user.service";
-import { destroyAllUserSessions, clearSessionCookie } from "../services/session.service";
-import { audit } from "../services/audit.service";
+} from "../services/user.service.js";
+import { destroyAllUserSessions, clearSessionCookie } from "../services/session.service.js";
+import { audit } from "../services/audit.service.js";
 
 const router = Router();
 

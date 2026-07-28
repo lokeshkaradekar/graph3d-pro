@@ -6,7 +6,7 @@ import {
   jsonb,
   index,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./users";
+import { usersTable } from "./users.js";
 
 /**
  * API keys for programmatic access (future feature).

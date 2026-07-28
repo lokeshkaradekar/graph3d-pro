@@ -7,11 +7,11 @@ import {
   type Subscription,
   type Plan,
 } from "@workspace/db";
-import { GRACE_PERIOD_DAYS, FREE_PLAN_SLUG } from "../lib/constants";
+import { GRACE_PERIOD_DAYS, FREE_PLAN_SLUG } from "../lib/constants.js";
 import {
   sendPaymentFailedEmail,
   sendSubscriptionCanceledEmail,
-} from "../lib/email";
+} from "../lib/email/index.js";
 
 export interface SubscriptionWithPlan {
   subscription: Subscription;

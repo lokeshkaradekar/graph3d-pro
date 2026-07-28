@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAuth } from "../middlewares/require-auth";
-import { requireFeature } from "../middlewares/require-feature";
-import { validate } from "../middlewares/validate";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAuth } from "../middlewares/require-auth.js";
+import { requireFeature } from "../middlewares/require-feature.js";
+import { validate } from "../middlewares/validate.js";
 import {
   listUserGraphs,
   getGraph,
@@ -15,11 +15,11 @@ import {
   getGraphVersions,
   restoreGraphVersion,
   validateGraphData,
-} from "../services/graph.service";
-import { incrementUsage } from "../services/usage.service";
-import { hasFeature } from "../services/feature.service";
-import { audit } from "../services/audit.service";
-import { FEATURES, MAX_GRAPH_DATA_BYTES } from "../lib/constants";
+} from "../services/graph.service.js";
+import { incrementUsage } from "../services/usage.service.js";
+import { hasFeature } from "../services/feature.service.js";
+import { audit } from "../services/audit.service.js";
+import { FEATURES, MAX_GRAPH_DATA_BYTES } from "../lib/constants.js";
 
 const router = Router();
 

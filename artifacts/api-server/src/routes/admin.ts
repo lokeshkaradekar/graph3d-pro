@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { z } from "zod";
-import { authenticate } from "../middlewares/authenticate";
-import { requireAdmin } from "../middlewares/require-admin";
-import { validate, validateQuery } from "../middlewares/validate";
+import { authenticate } from "../middlewares/authenticate.js";
+import { requireAdmin } from "../middlewares/require-admin.js";
+import { validate, validateQuery } from "../middlewares/validate.js";
 import {
   adminListUsers,
   adminCreatePlan,
@@ -11,9 +11,9 @@ import {
   adminGetDashboardStats,
   adminGetAuditLogs,
   adminGetWebhookEvents,
-} from "../services/admin.service";
-import { grantFeature, revokeFeature } from "../services/feature.service";
-import { audit } from "../services/audit.service";
+} from "../services/admin.service.js";
+import { grantFeature, revokeFeature } from "../services/feature.service.js";
+import { audit } from "../services/audit.service.js";
 import { eq } from "drizzle-orm";
 import { db } from "@workspace/db";
 import { plansTable } from "@workspace/db";

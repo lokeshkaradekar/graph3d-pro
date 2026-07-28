@@ -11,15 +11,15 @@ import {
   generateToken,
   hashToken,
   getClientIp,
-} from "../lib/crypto";
+} from "../lib/crypto.js";
 import {
   BCRYPT_ROUNDS,
   MAX_FAILED_LOGIN_ATTEMPTS,
   LOCKOUT_MINUTES,
   EMAIL_VERIFICATION_HOURS,
   PASSWORD_RESET_HOURS,
-} from "../lib/constants";
-import { sendVerificationEmail, sendPasswordResetEmail } from "../lib/email";
+} from "../lib/constants.js";
+import { sendVerificationEmail, sendPasswordResetEmail } from "../lib/email/index.js";
 import type { Request } from "express";
 
 // ── Email / Password normalization ────────────────────────────────────────────
