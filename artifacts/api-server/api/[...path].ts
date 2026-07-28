@@ -19,6 +19,6 @@
  * `(req, res) => void` handler, so exporting it directly is all that's
  * needed.
  */
-import app from "../src/app";
+import app from "../src/app.js";
 
 export default app;
