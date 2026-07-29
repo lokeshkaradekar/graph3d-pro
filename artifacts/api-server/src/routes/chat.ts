@@ -31,8 +31,8 @@ const chatSchema = z.object({
   max_tokens: z.number().int().positive().optional(),
 });
 
-function validateTotalChars(messages: { content: string }[]): string | null {
-  const total = messages.reduce((sum, m) => sum + m.content.length, 0);
+function validateTotalChars(messages: { content?: string }[]): string | null {
+  const total = messages.reduce((sum, m) => sum + (m.content?.length ?? 0), 0);
   if (total > MAX_TOTAL_CHARS) {
     return `Conversation is too long (max ${MAX_TOTAL_CHARS} characters combined).`;
   }

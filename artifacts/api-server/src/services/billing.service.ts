@@ -60,7 +60,7 @@ async function buildProviders(): Promise<Map<string, BillingProvider>> {
   providerCache = new Map();
 
   if (process.env["STRIPE_SECRET_KEY"]) {
-    const { StripeProvider } = await import("./providers/stripe.provider");
+    const { StripeProvider } = await import("./providers/stripe.provider.js");
     providerCache.set("stripe", new StripeProvider());
     logger.info("Billing: Stripe provider registered");
   } else {
