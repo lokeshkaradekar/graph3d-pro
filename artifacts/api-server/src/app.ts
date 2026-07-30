@@ -1,4 +1,5 @@
 import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -79,7 +80,7 @@ const publicDir = path.join(__dirname, "..", "public");
 app.use(express.static(publicDir, { maxAge: "1h" }));
 
 // ── SPA fallback — serve index.html for non-API routes ────────────────────────
-app.get(/^(?!\/api).*/, (req, res) => {
+app.get(/^(?!\/api).*/, (req: Request, res: Response) => {
   // Specific named routes
   const url = req.path;
   if (url === "/login" || url === "/login.html") {
@@ -94,7 +95,7 @@ app.get(/^(?!\/api).*/, (req, res) => {
 });
 
 // ── 404 handler (API only) ────────────────────────────────────────────────────
-app.use("/api", (_req, res) => {
+app.use("/api", (_req: Request, res: Response) => {
   res.status(404).json({ error: "Not found." });
 });
 
@@ -102,9 +103,9 @@ app.use("/api", (_req, res) => {
 app.use(
   (
     err: Error,
-    _req: express.Request,
-    res: express.Response,
-    _next: express.NextFunction,
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
   ) => {
     logger.error({ err }, "Unhandled error");
     res.status(500).json({ error: "Internal server error." });
