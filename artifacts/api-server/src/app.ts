@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -11,7 +11,7 @@ import { generalLimiter } from "./middlewares/rate-limit.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const app: Express = express();
+const app = express();
 
 // ── Security headers ──────────────────────────────────────────────────────────
 app.use(
