@@ -1,4 +1,5 @@
-import { Router, type IRouter } from "express";
+import { Router } from "express";
+import type { IRouter } from "express";
 import healthRouter from "./health.js";
 import authRouter from "./auth.js";
 import usersRouter from "./users.js";
