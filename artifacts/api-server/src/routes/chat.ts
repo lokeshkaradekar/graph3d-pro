@@ -3,6 +3,7 @@
  * Optionally requires authentication and tracks usage.
  */
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { validate } from "../middlewares/validate.js";
@@ -44,7 +45,7 @@ router.post(
   authLimiter,
   authenticate, // sets req.user if logged in (optional auth)
   validate(chatSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const apiKey = process.env["OPENROUTER_API_KEY"];
     if (!apiKey) {
       res.status(500).json({

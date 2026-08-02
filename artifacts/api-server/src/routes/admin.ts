@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAdmin } from "../middlewares/require-admin.js";
@@ -24,7 +25,7 @@ const router = Router();
 router.use(authenticate, requireAdmin);
 
 // ── GET /api/admin/stats ──────────────────────────────────────────────────────
-router.get("/stats", async (_req, res) => {
+router.get("/stats", async (_req: Request, res: Response) => {
   const stats = await adminGetDashboardStats();
   res.json(stats);
 });
@@ -36,7 +37,7 @@ const listUsersQuery = z.object({
   offset: z.coerce.number().min(0).optional().default(0),
 });
 
-router.get("/users", validateQuery(listUsersQuery), async (req, res) => {
+router.get("/users", validateQuery(listUsersQuery), async (req: Request, res: Response) => {
   const { search, limit, offset } = req.query as unknown as z.infer<typeof listUsersQuery>;
   const result = await adminListUsers(search, limit, offset);
   res.json(result);
@@ -52,7 +53,7 @@ const grantFeatureSchema = z.object({
 router.post(
   "/users/:userId/grant-feature",
   validate(grantFeatureSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const userId = String(req.params["userId"]);
     const { featureName, limitValue, expiresAt } = req.body;
     await grantFeature(userId, featureName, {
@@ -80,7 +81,7 @@ const revokeFeatureSchema = z.object({ featureName: z.string().min(1) });
 router.post(
   "/users/:userId/revoke-feature",
   validate(revokeFeatureSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const userId = String(req.params["userId"]);
     await revokeFeature(userId, req.body.featureName);
     audit({
@@ -97,7 +98,7 @@ router.post(
 );
 
 // ── GET /api/admin/plans ──────────────────────────────────────────────────────
-router.get("/plans", async (_req, res) => {
+router.get("/plans", async (_req: Request, res: Response) => {
   const plans = await db.select().from(plansTable).orderBy(plansTable.sortOrder);
   res.json({ plans });
 });
@@ -113,7 +114,7 @@ const createPlanSchema = z.object({
   sortOrder: z.number().int().optional(),
 });
 
-router.post("/plans", validate(createPlanSchema), async (req, res) => {
+router.post("/plans", validate(createPlanSchema), async (req: Request, res: Response) => {
   const plan = await adminCreatePlan(req.body);
   audit({
     actorId: req.user!.id,
@@ -140,7 +141,7 @@ const setPlanFeaturesSchema = z.object({
 router.put(
   "/plans/:planId/features",
   validate(setPlanFeaturesSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const planId = String(req.params["planId"]);
     await adminSetPlanFeatures(planId, req.body.features);
     audit({
@@ -163,7 +164,7 @@ const featureFlagSchema = z.object({
   description: z.string().optional(),
 });
 
-router.post("/feature-flags", validate(featureFlagSchema), async (req, res) => {
+router.post("/feature-flags", validate(featureFlagSchema), async (req: Request, res: Response) => {
   await adminSetFeatureFlag(req.body.name, req.body);
   audit({
     actorId: req.user!.id,
@@ -176,7 +177,7 @@ router.post("/feature-flags", validate(featureFlagSchema), async (req, res) => {
 });
 
 // ── GET /api/admin/audit-logs ─────────────────────────────────────────────────
-router.get("/audit-logs", async (req, res) => {
+router.get("/audit-logs", async (req: Request, res: Response) => {
   const logs = await adminGetAuditLogs({
     actorId: req.query["actorId"] as string | undefined,
     action: req.query["action"] as string | undefined,
@@ -187,7 +188,7 @@ router.get("/audit-logs", async (req, res) => {
 });
 
 // ── GET /api/admin/webhook-events ─────────────────────────────────────────────
-router.get("/webhook-events", async (req, res) => {
+router.get("/webhook-events", async (req: Request, res: Response) => {
   const events = await adminGetWebhookEvents(
     req.query["limit"] ? Number(req.query["limit"]) : 50,
   );

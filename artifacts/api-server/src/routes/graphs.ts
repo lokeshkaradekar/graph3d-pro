@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
@@ -39,7 +40,7 @@ const updateGraphSchema = z.object({
 });
 
 // ── GET /api/graphs/share/:token — public share link (no auth required) ───────
-router.get("/share/:token", async (req, res) => {
+router.get("/share/:token", async (req: Request, res: Response) => {
   const graph = await getGraphByShareToken(String(req.params["token"]));
   if (!graph) {
     res.status(404).json({ error: "Graph not found." });
@@ -52,13 +53,13 @@ router.get("/share/:token", async (req, res) => {
 router.use(authenticate, requireAuth);
 
 // ── GET /api/graphs — list user's graphs ──────────────────────────────────────
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   const graphs = await listUserGraphs(req.user!.id);
   res.json({ graphs });
 });
 
 // ── POST /api/graphs — create a graph ────────────────────────────────────────
-router.post("/", validate(createGraphSchema), async (req, res) => {
+router.post("/", validate(createGraphSchema), async (req: Request, res: Response) => {
   const { title, description, data, visibility } = req.body;
 
   // Validate graph data size
@@ -99,7 +100,7 @@ router.post("/", validate(createGraphSchema), async (req, res) => {
 });
 
 // ── GET /api/graphs/:id — load a graph ───────────────────────────────────────
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   const graph = await getGraph(String(req.params["id"]), req.user!.id);
   if (!graph) {
     res.status(404).json({ error: "Graph not found." });
@@ -109,7 +110,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // ── PUT /api/graphs/:id — update a graph ─────────────────────────────────────
-router.put("/:id", validate(updateGraphSchema), async (req, res) => {
+router.put("/:id", validate(updateGraphSchema), async (req: Request, res: Response) => {
   if (req.body.data !== undefined) {
     const dataError = validateGraphData(req.body.data);
     if (dataError) {
@@ -136,7 +137,7 @@ router.put("/:id", validate(updateGraphSchema), async (req, res) => {
 });
 
 // ── DELETE /api/graphs/:id ────────────────────────────────────────────────────
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   const deleted = await deleteGraph(String(req.params["id"]), req.user!.id);
   if (!deleted) {
     res.status(404).json({ error: "Graph not found." });
@@ -156,7 +157,7 @@ router.delete("/:id", async (req, res) => {
 router.post(
   "/:id/share",
   requireFeature(FEATURES.GRAPH_SHARING),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const shareToken = await enableSharing(String(req.params["id"]), req.user!.id);
     if (!shareToken) {
       res.status(404).json({ error: "Graph not found." });
@@ -177,7 +178,7 @@ router.post(
 router.get(
   "/:id/versions",
   requireFeature(FEATURES.VERSION_HISTORY),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const versions = await getGraphVersions(String(req.params["id"]), req.user!.id);
     res.json({ versions });
   },
@@ -187,7 +188,7 @@ router.get(
 router.post(
   "/:id/versions/:versionId/restore",
   requireFeature(FEATURES.VERSION_HISTORY),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const graph = await restoreGraphVersion(
       String(req.params["id"]),
       req.user!.id,

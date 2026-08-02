@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
 import { getUserUsage } from "../services/usage.service.js";
@@ -9,7 +10,7 @@ const router = Router();
 router.use(authenticate, requireAuth);
 
 // ── GET /api/usage/me — current user's usage stats ────────────────────────────
-router.get("/me", async (req, res) => {
+router.get("/me", async (req: Request, res: Response) => {
   const [usage, features] = await Promise.all([
     getUserUsage(req.user!.id),
     getUserFeatures(req.user!.id),

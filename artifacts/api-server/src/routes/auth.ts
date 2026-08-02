@@ -10,6 +10,7 @@
  * - Password reset and email verification are single-use tokens
  */
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
@@ -85,7 +86,7 @@ router.post(
   "/signup",
   authLimiter,
   validate(signupSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     // Honeypot check — bots fill hidden fields; real users never see them
     if (req.body.website) {
       // Return fake success so bots don't know we rejected them
@@ -144,7 +145,7 @@ router.post(
   "/login",
   authLimiter,
   validate(loginSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { email, password, rememberMe } = req.body;
 
     if (!isValidEmail(email) || typeof password !== "string" || !password) {
@@ -198,7 +199,7 @@ router.post(
 );
 
 // ── POST /api/auth/logout ─────────────────────────────────────────────────────
-router.post("/logout", authenticate, async (req, res) => {
+router.post("/logout", authenticate, async (req: Request, res: Response) => {
   const token = getTokenFromRequest(req);
   try {
     await destroySession(token);
@@ -213,7 +214,7 @@ router.post("/logout", authenticate, async (req, res) => {
 });
 
 // ── POST /api/auth/logout-all (invalidate all sessions) ──────────────────────
-router.post("/logout-all", authenticate, requireAuth, async (req, res) => {
+router.post("/logout-all", authenticate, requireAuth, async (req: Request, res: Response) => {
   try {
     await destroyAllUserSessions(req.user!.id);
     clearSessionCookie(res);
@@ -226,7 +227,7 @@ router.post("/logout-all", authenticate, requireAuth, async (req, res) => {
 });
 
 // ── GET /api/auth/me ──────────────────────────────────────────────────────────
-router.get("/me", authenticate, async (req, res) => {
+router.get("/me", authenticate, async (req: Request, res: Response) => {
   if (!req.user) {
     res.status(401).json({ user: null });
     return;
@@ -247,7 +248,7 @@ router.get("/me", authenticate, async (req, res) => {
 router.post(
   "/verify-email",
   validate(verifyEmailSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { token } = req.body;
     const result = await verifyEmail(token);
     if (!result.ok) {
@@ -265,7 +266,7 @@ router.post(
   authLimiter,
   authenticate,
   requireAuth,
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     if (req.user!.isVerified) {
       res.status(400).json({ error: "Your email is already verified." });
       return;
@@ -287,7 +288,7 @@ router.post(
   "/forgot-password",
   authLimiter,
   validate(forgotPasswordSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     // Always return 200 to prevent email enumeration
     try {
       await initiatePasswordReset(req.body.email, req);
@@ -307,7 +308,7 @@ router.post(
   "/reset-password",
   authLimiter,
   validate(resetPasswordSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { token, password } = req.body;
 
     const passwordError = validatePassword(password);

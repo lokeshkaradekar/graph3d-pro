@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
@@ -22,7 +23,7 @@ const updateProfileSchema = z.object({
 });
 
 // ── GET /api/users/me ─────────────────────────────────────────────────────────
-router.get("/me", async (req, res) => {
+router.get("/me", async (req: Request, res: Response) => {
   const user = await findUserById(req.user!.id);
   if (!user) {
     res.status(404).json({ error: "User not found." });
@@ -40,7 +41,7 @@ router.get("/me", async (req, res) => {
 });
 
 // ── PATCH /api/users/me ───────────────────────────────────────────────────────
-router.patch("/me", validate(updateProfileSchema), async (req, res) => {
+router.patch("/me", validate(updateProfileSchema), async (req: Request, res: Response) => {
   const updated = await updateProfile(req.user!.id, req.body);
   if (!updated) {
     res.status(404).json({ error: "User not found." });
@@ -63,7 +64,7 @@ router.patch("/me", validate(updateProfileSchema), async (req, res) => {
 
 // ── DELETE /api/users/me ──────────────────────────────────────────────────────
 // Soft-delete the account. All sessions invalidated immediately.
-router.delete("/me", async (req, res) => {
+router.delete("/me", async (req: Request, res: Response) => {
   await destroyAllUserSessions(req.user!.id);
   await softDeleteUser(req.user!.id);
   clearSessionCookie(res);

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
 import {
@@ -11,19 +12,19 @@ const router = Router();
 router.use(authenticate, requireAuth);
 
 // ── GET /api/features/me — all features for the current user ──────────────────
-router.get("/me", async (req, res) => {
+router.get("/me", async (req: Request, res: Response) => {
   const features = await getUserFeatures(req.user!.id);
   res.json({ features });
 });
 
 // ── GET /api/features/check/:feature — check a single feature ─────────────────
-router.get("/check/:feature", async (req, res) => {
+router.get("/check/:feature", async (req: Request, res: Response) => {
   const featureName = req.params["feature"];
   if (!featureName) {
     res.status(400).json({ error: "Feature name is required." });
     return;
   }
-  const result = await hasFeature(req.user!.id, featureName);
+  const result = await hasFeature(req.user!.id, String(featureName));
   res.json({
     feature: featureName,
     allowed: result.allowed,

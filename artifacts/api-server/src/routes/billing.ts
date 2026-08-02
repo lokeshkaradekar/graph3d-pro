@@ -10,6 +10,7 @@
  * 5. Never grant access before successful verification
  */
 import { Router, raw } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
@@ -49,7 +50,7 @@ router.post(
   requireAuth,
   requireVerified,
   validate(checkoutSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { planSlug, billingCycle, provider } = req.body;
 
     const plan = await getPlanBySlug(planSlug);
@@ -103,7 +104,7 @@ router.post(
   "/webhooks/stripe",
   webhookLimiter,
   raw({ type: "application/json" }),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const signature = req.headers["stripe-signature"] as string | undefined;
     const webhookSecret = process.env["STRIPE_WEBHOOK_SECRET"];
 

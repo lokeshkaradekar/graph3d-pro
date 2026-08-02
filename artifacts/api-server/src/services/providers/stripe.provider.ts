@@ -20,7 +20,7 @@ function getStripe(): Stripe {
     const key = process.env["STRIPE_SECRET_KEY"];
     if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
     stripeClient = new Stripe(key, {
-      apiVersion: "2026-06-24.dahlia",
+      apiVersion: "2026-06-24.dahlia" as Stripe.LatestApiVersion,
       typescript: true,
     });
   }

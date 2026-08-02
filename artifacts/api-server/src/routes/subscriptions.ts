@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
@@ -15,7 +16,7 @@ import { audit } from "../services/audit.service.js";
 const router = Router();
 
 // ── GET /api/subscriptions/plans (public) ────────────────────────────────────
-router.get("/plans", async (_req, res) => {
+router.get("/plans", async (_req: Request, res: Response) => {
   const plans = await getPublicPlans();
   res.json({ plans });
 });
@@ -24,7 +25,7 @@ router.get("/plans", async (_req, res) => {
 router.use(authenticate, requireAuth);
 
 // ── GET /api/subscriptions/me ─────────────────────────────────────────────────
-router.get("/me", async (req, res) => {
+router.get("/me", async (req: Request, res: Response) => {
   const [active, history] = await Promise.all([
     getActiveSubscription(req.user!.id),
     getSubscriptionHistory(req.user!.id),
@@ -42,7 +43,7 @@ router.post(
   "/cancel",
   requireVerified,
   validate(cancelSchema),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const { subscriptionId, immediate } = req.body;
 
     await cancelSubscription(req.user!.id, subscriptionId, !immediate);
@@ -61,7 +62,7 @@ router.post(
 );
 
 // ── GET /api/subscriptions/history ────────────────────────────────────────────
-router.get("/history", async (req, res) => {
+router.get("/history", async (req: Request, res: Response) => {
   const history = await getSubscriptionHistory(req.user!.id);
   res.json({ history });
 });

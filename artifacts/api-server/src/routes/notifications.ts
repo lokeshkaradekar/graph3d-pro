@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { authenticate } from "../middlewares/authenticate.js";
 import { requireAuth } from "../middlewares/require-auth.js";
 import {
@@ -13,7 +14,7 @@ const router = Router();
 router.use(authenticate, requireAuth);
 
 // ── GET /api/notifications ────────────────────────────────────────────────────
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   const [notifications, unreadCount] = await Promise.all([
     getUserNotifications(req.user!.id),
     getUnreadCount(req.user!.id),
@@ -22,8 +23,8 @@ router.get("/", async (req, res) => {
 });
 
 // ── PATCH /api/notifications/:id/read ────────────────────────────────────────
-router.patch("/:id/read", async (req, res) => {
-  const ok = await markNotificationRead(req.params["id"]!, req.user!.id);
+router.patch("/:id/read", async (req: Request, res: Response) => {
+  const ok = await markNotificationRead(String(req.params["id"]!), req.user!.id);
   if (!ok) {
     res.status(404).json({ error: "Notification not found." });
     return;
@@ -32,7 +33,7 @@ router.patch("/:id/read", async (req, res) => {
 });
 
 // ── POST /api/notifications/read-all ─────────────────────────────────────────
-router.post("/read-all", async (req, res) => {
+router.post("/read-all", async (req: Request, res: Response) => {
   await markAllNotificationsRead(req.user!.id);
   res.json({ ok: true });
 });
